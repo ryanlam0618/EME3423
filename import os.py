@@ -1,10 +1,7 @@
-import os
+import cv2 
 
-def test():
+print(cv2.__version__)
 
+img = cv2.imread('Resources/lena.png')
 
-    print("hello world")
-
-if __name__ == "__main__":
-    test()
-    
+cv2.imshow('Output', img)
