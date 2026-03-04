@@ -1,0 +1,17 @@
+import cv2
+import face_recognition
+import numpy as np
+
+img_Blackpink = face_recognition.load_image_file('Resources\BlackPink.png')
+# Handle RGBA images by converting to RGB
+if len(img_Blackpink.shape) == 3 and img_Blackpink.shape[2] == 4:
+    img_Blackpink = img_Blackpink[:, :, :3]
+# Ensure image is uint8
+if img_Blackpink.dtype != np.uint8:
+    img_Blackpink = (img_Blackpink * 255).astype(np.uint8)
+face_loc_blackpink = face_recognition.face_locations(img_Blackpink)[0]
+print(face_loc_blackpink)
+img_Blackpink_BGR = cv2.cvtColor(img_Blackpink, cv2.COLOR_RGB2BGR)
+cv2.rectangle(img_Blackpink_BGR, (face_loc_blackpink[3], face_loc_blackpink[0]), (face_loc_blackpink[1], face_loc_blackpink[2]), (0, 255, 0), 2)
+cv2.imshow('Blackpink', img_Blackpink_BGR)
+cv2.waitKey(0)

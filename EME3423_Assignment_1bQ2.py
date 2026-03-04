@@ -10,7 +10,7 @@ while True:
         break
     
     # Convert to HSV color space
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)    
     
     # Apply Gaussian Blur
     gaussian_blur = cv2.GaussianBlur(image, (5, 5), 0)
