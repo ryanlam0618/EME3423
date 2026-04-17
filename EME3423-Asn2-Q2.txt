@@ -1,0 +1,88 @@
+================================================================================
+EME3423 Assignment 2 - Question 2
+Non-maximum Suppression (NMS) in YOLO v3
+================================================================================
+
+Question:
+Using YOLO v3 for object detection, an object might be detected in any or all 
+of the unconnected layers (yolo-82, yolo-94, yolo-106), multi-boxes will be 
+existed. A method named Non-maximum Suppression (NMS) is used to get the best 
+result. Explain briefly how NMS is done.
+
+
+Answer:
+--------------------------------------------------------------------------------
+
+Non-maximum Suppression (NMS) is a post-processing technique used in YOLO v3 to 
+eliminate redundant and overlapping bounding boxes, keeping only the best 
+detection for each object. Here's how NMS works:
+
+Step 1: Collect All Detections
+------------------------------
+YOLO v3 has three detection layers (yolo-82, yolo-94, yolo-106) at different 
+scales. Each layer detects objects at different sizes. An object can be detected 
+by multiple bounding boxes across these layers, resulting in many overlapping 
+boxes for the same object.
+
+Step 2: Filter by Confidence Threshold
+-------------------------------------
+First, all bounding boxes with a confidence score below a certain threshold 
+(e.g., 0.5) are discarded. This removes low-confidence detections that are 
+likely false positives.
+
+Step 3: Calculate Intersection over Union (IoU)
+-----------------------------------------------
+For the remaining bounding boxes, the IoU (Intersection over Union) is 
+calculated between pairs of boxes. IoU measures how much two boxes overlap:
+
+    IoU = Area of Overlap / Area of Union
+
+Step 4: Sort by Confidence
+---------------------------
+All remaining bounding boxes are sorted in descending order based on their 
+confidence scores (probability × class confidence).
+
+Step 5: Suppress Overlapping Boxes
+----------------------------------
+NMS iterates through the sorted boxes:
+1. Select the box with the highest confidence score as the "keeper"
+2. Compare this box with all other remaining boxes
+3. If the IoU between the keeper box and another box exceeds a threshold 
+   (typically 0.45), that overlapping box is suppressed (removed)
+4. Move to the next highest confidence box that hasn't been suppressed
+5. Repeat until all boxes have been processed
+
+The result is that for each object, only ONE bounding box with the highest 
+confidence is kept, while redundant overlapping boxes are eliminated.
+
+Example:
+--------
+If two bounding boxes are detected for the same apple:
+- Box A: confidence = 0.95
+- Box B: confidence = 0.85, IoU with Box A = 0.7 (> 0.45 threshold)
+
+Since IoU > 0.45, Box B is suppressed. Only Box A is kept.
+
+Why NMS is Needed in YOLO v3:
+------------------------------
+1. Multiple detection scales: YOLO v3 uses 3 detection layers at different 
+   scales, so the same object can be detected multiple times
+2. Anchor boxes: Multiple anchor boxes at each location increase detection 
+   coverage but also increase overlapping predictions
+3. Object detection: NMS ensures each object is detected once with the best 
+   fitting bounding box
+
+Summary:
+--------
+NMS is essential in YOLO v3 to remove duplicate detections by:
+1. Filtering low-confidence detections
+2. Sorting by confidence score
+3. Removing boxes with high IoU overlap
+4. Keeping only the best bounding box for each detected object
+
+In OpenCV, NMS can be performed using:
+    indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
+
+This returns the indices of boxes to keep after suppression.
+
+================================================================================
