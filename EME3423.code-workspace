@@ -3,6 +3,9 @@
 		{
 			"name": "EME3423",
 			"path": "."
+		},
+		{
+			"path": "../../../Downloads/yolov3 model"
 		}
 	],
 	"settings": {}
